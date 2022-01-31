@@ -1,5 +1,5 @@
 ### Hi there 👋
-Have a look at my contribution
+<!-- Have a look at my contribution -->
 
 ![Snake gif](https://github.com/cart00n01/cart00n01/blob/main/output/github-contribution-grid-snake.gif)
 <!--
