@@ -1,57 +1,41 @@
 # GitHub Action for generating a contribution graph with a snake eating your contributions.
 # Original repo: https://github.com/Platane/snk
 
-
-name: Generate Snake 
-
-# Controls when the action will run. This action runs every 30 minutes.
+name: Generate Snake
 
 on:
   push:
     branches:
       - main
   schedule:
-      # every 30 minutes
-    - cron: "*/30 * * * *"
-
-# This command allows us to run the Action automatically from the Actions tab.
+    - cron: "0 */6 * * *"  # Runs every 6 hours (30 mins is too frequent, often fails)
   workflow_dispatch:
 
-# The sequence of runs in this workflow:
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  generate-snake:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    
-    # Checks repo, so your job can access it
-      - uses: actions/checkout@v2
-      
-    # Generates the snake  
-      - uses: Platane/snk@master
-        id: snake-gif
+      - uses: actions/checkout@v3
+
+      - name: Generate the snake animation
+        uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
-          # these next 2 lines generate the files inside a folder called "output".
-          gif_out_path: output/github-contribution-grid-snake.gif
-          svg_out_path: output/github-contribution-grid-snake.svg        
-    
-    # Adds and commits the files
-      - name: Commit files
+          outputs: |
+            ./output/github-contribution-grid-snake.svg
+            ./output/github-contribution-grid-snake.gif
+
+      - name: Commit and push if files changed
         run: |
-          git config --local user.email "sanskarsilwal123@gmail.com"
-          git config --local user.name "cart00n01"
-          git status
+          git config --global user.name "cart00n01"
+          git config --global user.email "sanskarsilwal123@gmail.com"
           git add .
-          git commit -m "Created snake gif and svg"
-          
-      # Push the changes
-      - name: Push changes  
+          git diff --quiet && git diff --staged --quiet || git commit -m "Generated snake animation"
+        continue-on-error: true  # avoids full fail if nothing changed
+
+      - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
-          force: true
+
