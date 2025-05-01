@@ -2,7 +2,7 @@
 # Original repo: https://github.com/Platane/snk
 
 
-name: Generate Snake
+name: Generate Snake 
 
 # Controls when the action will run. This action runs every 30 minutes.
 
@@ -49,7 +49,7 @@ jobs:
           git commit -m "Created snake gif and svg"
           
       # Push the changes
-      - name: Push changes
+      - name: Push changes  
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
